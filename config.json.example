@@ -1,0 +1,6 @@
+{
+    "server_port": 8888,
+    "apikey": "123key",
+    "youtube_user": "username",
+    "media_server": "http://localhost:9011/youtubestream/stream?videoid={0}"
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Presentation>
+    <PresentationMap type="Search">
+        <Match>
+            <SearchCategories>
+                <Category id="tracks" />
+                <Category id="playlists" />
+                <Category id="people" />
+                <Category id="tags" />
+            </SearchCategories>
+        </Match>
+    </PresentationMap>
+</Presentation>

@@ -1,0 +1,17 @@
+{
+  "name": "sonosyoutube",
+  "version": "0.0.1",
+  "description": "Sonos youtube soap service",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "boda",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "googleapis": "^14.0.0",
+    "soap": "^0.17.0",
+    "winston": "^2.2.0"
+  }
+}
