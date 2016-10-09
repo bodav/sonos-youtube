@@ -1,13 +1,6 @@
-var config = require("./config");
+var youtube = require("./youtube");
 
-var google = require('googleapis');
-var youtube = google.youtube("v3");
-
-youtube.videos.list({ 
-    "auth": config.apikey, 
-    "part": "snippet,contentDetails",
-    "id": "NHilrpLb-tI" }, function(err, data) {
-
-        console.log(err);
-        console.log(data);
+youtube.userchannel(function(data, err) {
+    console.log(data);
+    console.log(err);
 });

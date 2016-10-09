@@ -1,3 +1,7 @@
+var youtube = require("./youtube");
+var models = require("./models");
+var winston = require("winston");
+
 var sonosService = {
     Sonos: {
         SonosSoap: {
@@ -6,17 +10,34 @@ var sonosService = {
                 return { "catalog": "0", "favorites": "0" };
             },
 
-            getMetadata: function(args) {
+            getMetadata: function(args, callback) {
+                var id = deserializeId(args.id);
 
-                if(args.id == "root") {
+                if(id.prefix == models.ID_PREFIX.ROOT) {
                     //root view
-                    throw fault("test", "test2");
+                    payload = youtube.userchannel(function(mediaCollections, err) {
+                        if(err != null) {
+                            throw fault("", err);
+                        }
 
-                } else {
-                    //decode id
+                        mediaCollections.unshift(models.mediaCollection(models.ID_PREFIX.PLAYLISTS, null, "Playlists", ""));
+                        mediaCollections.unshift(models.mediaCollection(models.ID_PREFIX.SUBSCRIPTIONS, null, "Subscriptions", ""));
+                        callback(models.getMetadataResult(mediaCollections));
+                    });
+                    
+                } else if(id.prefix == models.ID_PREFIX.PLAYLISTS) {
+                    //Playlists
+                    
+                } else if(id.prefix == models.ID_PREFIX.PLAYLIST) {
+                    //Playlist
+                    
+                } else if(id.prefix == models.ID_PREFIX.SUBSCRIPTIONS) {
+                    //Subscriptions
+                    
+                } else if(id.prefix == models.ID_PREFIX.CHANNEL) {
+                    //Channel
+                    
                 }
-
-                return { };
             },
 
             search: function(args) {
@@ -28,17 +49,37 @@ var sonosService = {
             },
 
             getMediaURI: function(args) {
-                return { };
+                return "test";
             }
         }
     }
 };
 
+function deserializeId(id) {
+    var idParts = id.split(".");
+
+    if(idParts.length == 2) {
+        return { prefix: idParts[0],
+            id: idParts[1] };
+    } else {
+        return { prefix: idParts[0] };
+    }
+}
+
 function fault(code, reason) {
+    winston.error(reason);
+    //TODO...
+    //http://musicpartners.sonos.com/node/460
+    //throw fault("test", "test2");
     return { 
         Fault: {
-            Code: { Value: code },
-            Reason: { Text: reason }
+            faultcode: "Server.ServiceUnknownError",
+            faultstring: reason,
+            detail: {
+                ExceptionInfo: "",
+                SonosError: 35
+            },
+            statusCode: 500
         }
     }
 }
