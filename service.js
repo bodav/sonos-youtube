@@ -7,7 +7,7 @@ var sonosService = {
         SonosSoap: {
 
             getLastUpdate: function(args) {
-                return { "catalog": "0", "favorites": "0" };
+                return models.getLastUpdateResult();
             },
 
             getMetadata: function(args, callback) {
@@ -15,7 +15,7 @@ var sonosService = {
 
                 if(id.prefix == models.ID_PREFIX.ROOT) {
                     //root view
-                    payload = youtube.userchannel(function(mediaCollections, err) {
+                    youtube.userChannel(function(mediaCollections, err) {
                         if(err != null) {
                             throw fault("", err);
                         }
@@ -27,9 +27,23 @@ var sonosService = {
                     
                 } else if(id.prefix == models.ID_PREFIX.PLAYLISTS) {
                     //Playlists
+                    youtube.userPlaylists(function(mediaCollections, err) {
+                        if(err != null) {
+                            throw fault("", err);
+                        }
+
+                        callback(models.getMetadataResult(mediaCollections));
+                    });
                     
                 } else if(id.prefix == models.ID_PREFIX.PLAYLIST) {
                     //Playlist
+                    youtube.playlist(id.id, function(mediaMetadatas, err) {
+                        if(err != null) {
+                            throw fault("", err);
+                        }
+
+                        callback(models.getMetadataResult(mediaMetadatas));
+                    });
                     
                 } else if(id.prefix == models.ID_PREFIX.SUBSCRIPTIONS) {
                     //Subscriptions

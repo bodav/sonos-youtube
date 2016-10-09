@@ -5,16 +5,17 @@ var models = require("./models");
 
 var youtube = google.youtube("v3");
 var key = config.apikey;
-var user_channel_id = undefined;
+var userChannelId = undefined;
 
-module.exports.userchannel = function(callback) {
+module.exports.userChannel = function(callback) {
     youtube.channels.list({ auth: key,
         part: "contentDetails",
+        maxResults: 50,
         forUsername: config.youtube_user}, function(err, data) {
             
             var mediaCollections = [];
-            user_channel_id = data.items[0].id;
-            winston.info("User channel id: " + user_channel_id);
+            userChannelId = data.items[0].id;
+            winston.info("User channel id: " + userChannelId);
             
             var relatedPlaylists = data.items[0].contentDetails.relatedPlaylists;
 
@@ -27,46 +28,99 @@ module.exports.userchannel = function(callback) {
     });
 };
 
-module.exports.channel = function(channelid) {
+module.exports.channel = function(channelId, callback) {
 
 };
 
-module.exports.userplaylists = function() {
+module.exports.userPlaylists = function(callback) {
+    module.exports.playlists(userChannelId, callback);
+};
+
+module.exports.playlists = function(channelId, callback) {
+    youtube.playlists.list({auth: key,
+        part: "snippet",
+        maxResults: 50,
+        channelId: channelId}, function(err, data){
+            var mediaCollections = [];
+
+            for(item in data.items) {
+                mediaCollections.push(models.mediaCollection(models.ID_PREFIX.PLAYLIST, 
+                    data.items[item].id, data.items[item].snippet.title, 
+                    getBestThumbnail(data.items[item].snippet)));
+            }
+
+            callback(mediaCollections, err);
+        }); 
+};
+
+module.exports.playlist = function(playlistId, callback) {
+    youtube.playlistItems.list({ auth: key,
+        part: "snippet",
+        maxResults: 50,
+        playlistId: playlistId}, function(err, data) {
+            var mediaMetadatas = [];
+
+            for(item in data.items) {
+                if(data.items[item].snippet.resourceId.kind == "youtube#video") {
+                    artistAndTitle = splitTitle(data.items[item].snippet.title);
+
+                    mediaMetadatas.push(models.mediaMetadata(models.ID_PREFIX.VIDEO, 
+                        data.items[item].snippet.resourceId.videoId,
+                        artistAndTitle.title,
+                        models.trackMetadata(artistAndTitle.artist,
+                            getBestThumbnail(data.items[item].snippet),
+                            0)));
+                }
+            }
+
+            callback(mediaMetadatas, err);
+        });
+};
+
+module.exports.userSubscriptions = function(callback) {
+    module.exports.subscriptions(userChannelId, callback);
+};
+
+module.exports.subscriptions = function(channelId, callback) {
 
 };
 
-module.exports.playlists = function(channelid) {
+module.exports.searchVideos = function(term, callback) {
 
 };
 
-module.exports.playlist = function(playlistid) {
+module.exports.searchChannels = function(term, callback) {
 
 };
 
-module.exports.usersubscriptions = function() {
+module.exports.searchPlaylists = function(term, callback) {
 
 };
 
-module.exports.subscriptions = function(channelid) {
+module.exports.video = function(videoId, callback) {
 
 };
 
-module.exports.searchvideos = function(term) {
+function splitTitle(title) {
+    var s = title.split(" - ");
 
-};
+    if(s.length > 1) {
+        return { artist: s[0], title: s[1] };
+    } else {
+        return { artist: "", title: title };
+    }
+}
 
-module.exports.searchchannels = function(term) {
+function getBestThumbnail(snippet) {
+    var thumbs = snippet.thumbnails;
 
-};
-
-module.exports.searchplaylists = function(term) {
-
-};
-
-module.exports.video = function(videoid) {
-
-};
-
-function split_title(title) {
-
+    if("high" in thumbs) {
+        return thumbs.high.url;
+    } else if("standard" in thumbs) {
+        return thumbs.standard.url;
+    } else if("default" in thumbs) {
+        return thumbs.default.url;
+    } else {
+        return "";
+    } 
 }
