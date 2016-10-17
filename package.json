@@ -3,6 +3,7 @@
   "version": "0.8.0",
   "description": "Sonos youtube soap service",
   "main": "app.js",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
