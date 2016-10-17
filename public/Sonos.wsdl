@@ -1976,7 +1976,7 @@
 
     <wsdl:service name="Sonos">
         <wsdl:port name="SonosSoap" binding="tns:SonosSoap">
-            <soap:address location="http://moapi.sonos.com/Test/TestService.php"/>
+            <soap:address location="http://192.168.0.12/soap"/>
         </wsdl:port>
     </wsdl:service>
 

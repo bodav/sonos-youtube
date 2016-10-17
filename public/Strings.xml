@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<stringtables xmlns="http://sonos.com/sonosapi">
+    <stringtable rev="1" xml:lang="en-US">
+        <string stringId="ServicePromo">Youtube Sonos Service</string>
+    </stringtable>
+</stringtables>
