@@ -44,7 +44,7 @@ module.exports.mediaMetadata = function (idPrefix, id, title, trackMetadata) {
         id: createId(idPrefix, id),
         title: title,
         itemType: "track",
-        mimeType: "application/vnd.apple.mpegURL",
+        mimeType: "audio/mp3",
         trackMetadata: trackMetadata
     };
 };

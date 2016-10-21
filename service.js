@@ -2,6 +2,7 @@ var youtube = require("./youtube");
 var models = require("./models");
 var winston = require("winston");
 var util = require("util");
+var config = require("./config.json");
 
 var sonosService = {
     Sonos: {
@@ -133,7 +134,7 @@ var sonosService = {
             getMediaURI: function (args, callback) {
                 winston.info("getMediaURI");
                 var id = deserializeId(args.id);
-                return "";
+                return { getMediaURIResult: config.mediaServer + id.id };
             }
         }
     }

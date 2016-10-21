@@ -20,7 +20,7 @@ var wsdl = fs.readFileSync('public/Sonos.wsdl', 'utf8');
 
 app.use('/static', express.static('public'));
 
-app.listen(config.server_port, function () {
+app.listen(config.serverPort, function () {
     var sonossoap = soap.listen(app, '/soap', sonosService, wsdl);
 
     sonossoap.log = function (type, data) {
@@ -32,4 +32,4 @@ app.listen(config.server_port, function () {
     });
 });
 
-winston.info("Server started on port: " + config.server_port);
+winston.info("Server started on port: " + config.serverPort);

@@ -13,7 +13,7 @@ module.exports.userChannel = function (callback) {
         auth: key,
         part: "contentDetails",
         maxResults: 50,
-        forUsername: config.youtube_user
+        forUsername: config.youtubeUser
     }, function (err, data) {
         var mediaCollections = [];
 
